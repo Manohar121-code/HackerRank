@@ -21,8 +21,11 @@ public class TheBombermanGame {
             	return;
             }
         }
-        String[] result = obj.bomberMan(n, grid);
-        obj.printArr(result, "***********");
+//        String[] result = obj.bomberMan(n, grid);
+//        obj.printArr(result, "******By String*****");
+        
+        String[] resultByCharArray = obj.bomberManByCharArray(n, grid);
+        obj.printArr(resultByCharArray, "******Final OP*****");
         rcn.close();
 	}
 	
@@ -32,6 +35,124 @@ public class TheBombermanGame {
             System.out.println(result[i]);
         }
 	}
+	
+	//**************************By Char ARRAY
+	private void printCharArr(char[][] result, int rowSize, int colSize, String n) {
+		System.out.println("--------------"+n+"-----------------");
+		for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < colSize; j++) {
+				System.out.print(result[i][j]);
+			}
+            System.out.println();
+        }
+	}
+	
+	private char[][] getStrArrToCharArr(String[] grid, int rowSize, int colSize) {
+		char[][] resultArray = new char[rowSize][colSize];
+		for (int i = 0; i < rowSize; i++) {
+			for (int j = 0; j < colSize; j++) {
+				resultArray[i][j] = grid[i].charAt(j);
+			}
+		}
+		return resultArray;
+	}
+	
+	private String[] getCharArrToStrArr(char[][] charArr, int rowSize, int colSize) {
+		String[] strArr = new String[charArr.length];
+		StringBuilder sbl;
+		for (int i = 0; i < rowSize; i++) {
+			sbl = new StringBuilder();
+			for (int j = 0; j < colSize; j++) {
+				sbl.append(charArr[i][j]);
+			}
+			strArr[i] = sbl.toString();
+		}
+		return strArr;
+	}
+	
+	private String[] bomberManByCharArray(int n, String[] grid) {
+		int rowSize = grid.length;
+		int colSize = grid[0].length();
+		char[][] charArr = getStrArrToCharArr(grid, rowSize, colSize);
+		for (int i = 1; i <= n; i+=3) {
+			
+			if (i != 1)
+				i--;
+			//******************First second start
+			if (i <= n) {
+				//In first second do nothing
+				printCharArr(charArr, rowSize, colSize, i+"");
+				
+				//******************Second second start
+				if ((i+1) <= n) {
+					if ((i+2) > n) {// if 2nd second is last fill O's in String[].
+						for (int j = 0; j < rowSize; j++) {
+							for (int k = 0; k < colSize; k++)
+								charArr[j][k] = 'O';
+						}
+					}
+					printCharArr(charArr, rowSize, colSize, (i+1)+"");
+					
+					//******************Third second start
+					if ((i+2) <= n) {
+						doBlastByCharArray(charArr, rowSize, colSize);
+						printCharArr(charArr, rowSize, colSize, (i+2)+"");
+					}
+					//******************Third second end
+				}
+				//******************Second second end
+			}
+			//******************First second end
+		}
+		return getCharArrToStrArr(charArr, rowSize, colSize);
+	}
+	
+	/*
+6 7 3
+.......
+...O...
+....O..
+.......
+OO.....
+OO.....
+-----
+OOO.OOO
+OO...OO
+OOO...O
+..OO.OO
+...OOOO
+...OOOO
+
+	 */
+	private void doBlastByCharArray(char[][] charArr, int rowSize, int colSize) {
+		boolean[][] blasted = new boolean[rowSize][colSize];
+		for (int i = 0; i < rowSize; i++) {
+			for (int j = 0; j < colSize; j++) {
+				//both if & elseif conditions are for not blasted indirectly.
+				if (charArr[i][j] == 'O') {
+					blasted[i][j] = true;
+					charArr[i][j] = '.';//blasting current cell
+					if (!(i-1 < 0 || i-1 >= rowSize || j < 0 || j >= colSize) && (charArr[i-1][j] != 'O' || blasted[i-1][j]))// top
+						blastCordinatesByCharArray(i-1, j, charArr, blasted);
+					if (!(i < 0 || i >= rowSize || j-1 < 0 || j-1 >= colSize) && (charArr[i][j-1] != 'O' || blasted[i][j-1]))// left
+						blastCordinatesByCharArray(i, j-1, charArr, blasted);
+					if (!(i+1 < 0 || i+1 >= rowSize || j < 0 || j >= colSize) && (charArr[i+1][j] != 'O' || blasted[i+1][j]))// bottom
+						blastCordinatesByCharArray(i+1, j, charArr, blasted);
+					if (!(i < 0 || i >= rowSize || j+1 < 0 || j+1 >= colSize) && (charArr[i][j+1] != 'O' || blasted[i][j+1]))// right
+						blastCordinatesByCharArray(i, j+1, charArr, blasted);
+				} else if (!blasted[i][j]) {
+					charArr[i][j] = 'O';//fill with 'O'
+					blasted[i][j] = true;
+				}
+			}
+		}
+	}
+
+	private void blastCordinatesByCharArray(int i, int j, char[][] charArr, boolean[][] blasted) {
+		blasted[i][j] = true;
+		charArr[i][j] = '.';
+	}
+	//**************************By Char ARRAY
 
 	private String[] bomberMan(int n, String[] grid) {
 		int rowSize = grid.length;
