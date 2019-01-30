@@ -36,7 +36,7 @@ public class TheBombermanGame {
         }
 	}
 	
-	//**************************By Char ARRAY
+	//**************************By Char ARRAY********************************************************************************************************************************
 	private void printCharArr(char[][] result, int rowSize, int colSize, String n) {
 		System.out.println("--------------"+n+"-----------------");
 		for (int i = 0; i < rowSize; i++) {
@@ -90,11 +90,9 @@ public class TheBombermanGame {
 							for (int k = 0; k < colSize; k++)
 								charArr[j][k] = 'O';
 						}
-					}
-					printCharArr(charArr, rowSize, colSize, (i+1)+"");
-					
-					//******************Third second start
-					if ((i+2) <= n) {
+						printCharArr(charArr, rowSize, colSize, (i+1)+"");
+					} else { //******************Third second start
+//					if ((i+2) <= n) {
 						doBlastByCharArray(charArr, rowSize, colSize);
 						printCharArr(charArr, rowSize, colSize, (i+2)+"");
 					}
@@ -130,11 +128,10 @@ OOO...O
 			for (int j = 0; j < colSize; j++) {
 				//both if & elseif conditions are for not blasted indirectly.
 				if (charArr[i][j] == 'O') {
-					blasted[i][j] = true;
 					charArr[i][j] = '.';//blasting current cell
-					if (!(i-1 < 0 || i-1 >= rowSize || j < 0 || j >= colSize) && (charArr[i-1][j] != 'O' || blasted[i-1][j]))// top
+					if (!(i-1 < 0 || i-1 >= rowSize || j < 0 || j >= colSize))// top
 						blastCordinatesByCharArray(i-1, j, charArr, blasted);
-					if (!(i < 0 || i >= rowSize || j-1 < 0 || j-1 >= colSize) && (charArr[i][j-1] != 'O' || blasted[i][j-1]))// left
+					if (!(i < 0 || i >= rowSize || j-1 < 0 || j-1 >= colSize))// left
 						blastCordinatesByCharArray(i, j-1, charArr, blasted);
 					if (!(i+1 < 0 || i+1 >= rowSize || j < 0 || j >= colSize) && (charArr[i+1][j] != 'O' || blasted[i+1][j]))// bottom
 						blastCordinatesByCharArray(i+1, j, charArr, blasted);
@@ -142,8 +139,8 @@ OOO...O
 						blastCordinatesByCharArray(i, j+1, charArr, blasted);
 				} else if (!blasted[i][j]) {
 					charArr[i][j] = 'O';//fill with 'O'
-					blasted[i][j] = true;
 				}
+				blasted[i][j] = true;
 			}
 		}
 	}
@@ -152,7 +149,7 @@ OOO...O
 		blasted[i][j] = true;
 		charArr[i][j] = '.';
 	}
-	//**************************By Char ARRAY
+	//**************************By Char ARRAY********************************************************************************************************************************
 
 	private String[] bomberMan(int n, String[] grid) {
 		int rowSize = grid.length;
